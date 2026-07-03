@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ห้องเรียนคานแทนค่าแสนสนุก</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: 'Mali', cursive;
+            font-size: 1.15rem;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 25%, #fff1a6 50%, #c2e9fb 75%, #d4fc79 100%);
+            background-size: 300% 300%;
+            color: #333;
+            margin: 0;
+            padding: 10px 15px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow: hidden;
+        }
+
+        h1 {
+            color: #375286;
+            text-shadow: 1px 1px #e6eeff;
+            margin: 0 0 10px 0;
+            font-size: 2.4rem;
+            text-align: center;
+        }
+
+        .top-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            height: 140px;
+        }
+
+        .bottom-row {
+            display: flex;
+            gap: 15px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .config-card { flex: 1.2; }
+        .basket-card {
+            flex: 1;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .scale-card {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #fffdf9;
+            border: 2px solid #fffae6;
+        }
+
+        h2 {
+            color: #375286;
+            margin: 0 0 8px 0;
+            font-size: 1.4rem;
+            border-bottom: 2px solid #f0f4f8;
+            padding-bottom: 4px;
+        }
+
+        /* --- โซนตั้งค่าน้ำหนัก --- */
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .config-item {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            background: #f8fafc;
+            border: 2px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 6px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            gap: 4px;
+        }
+
+        .config-item input {
+            width: 55px;
+            padding: 3px;
+            font-family: 'Mali', cursive;
+            font-size: 1.25rem;
+            text-align: center;
+            border: 2px solid #375286;
+            border-radius: 6px;
+            margin-left: 4px;
+            margin-right: 4px;
+        }
+
+        .config-item select {
+            font-family: 'Mali', cursive;
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 3px 4px;
+            border: 2px solid #375286;
+            border-radius: 6px;
+            background: white;
+        }
+
+        .config-item.rule-row.invalid {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .rule-error {
+            flex-basis: 100%;
+            color: #ef4444;
+            font-size: 0.9rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .config-hint {
+            font-size: 1rem;
+            color: #ef4444;
+            margin-top: 6px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* --- ตะกร้าผลไม้หลัก --- */
+        .items-pantry {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 8px;
+        }
+
+        .pantry-item {
+            font-size: 2.6rem;
+            cursor: grab;
+            background: #fff;
+            border: 3px solid #cbd5e1;
+            border-radius: 50%;
+            width: 65px;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .pantry-item:hover { transform: scale(1.05); }
+        .pantry-item.selected {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+        }
+
+        /* --- โครงสร้างตาชั่ง --- */
+        .scale-wrapper {
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: 30px; /* เผื่อพื้นที่ให้ป้ายคะแนน */
+            min-height: 0;
+        }
+
+        .beam {
+            width: 340px;
+            height: 12px;
+            background-color: #8b4513;
+            border-radius: 6px;
+            position: relative;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-origin: center center;
+            z-index: 2;
+        }
+
+        .base {
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-bottom: 50px solid #a0522d;
+            z-index: 1;
+            margin-top: -6px;
+        }
+
+        /* ตัวจาน (จะถูกสั่งหมุนสวนทางกับคาน เพื่อให้ขนานพื้นเสมอ) */
+        .pan {
+            width: 130px;
+            height: 14px;
+            background-color: #cbd5e1;
+            position: absolute;
+            top: -16px;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            box-shadow: 0 3px 0 #94a3b8;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .pan-left { left: -10px; }
+        .pan-right { right: -10px; }
+
+        .dropzone {
+            width: 100%;
+            height: 90px;
+            display: flex;
+            flex-wrap: wrap-reverse;
+            justify-content: center;
+            align-content: flex-start;
+            gap: 2px;
+            padding: 3px;
+            box-sizing: border-box;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        
+        .dropzone:hover { background-color: rgba(255, 255, 255, 0.3); }
+
+        /* ผลไม้ในจานวาง */
+        .dropzone .placed-item {
+            font-size: 1.9rem;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.1s;
+        }
+
+        .dropzone .placed-item:hover {
+            transform: scale(1.2);
+            background: rgba(239, 68, 68, 0.15);
+            border-radius: 50%;
+        }
+
+        /* ปุ่มกดต่างๆ */
+        .btn {
+            background-color: #375286;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            font-size: 1.1rem;
+            font-family: 'Mali', cursive;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover { background-color: #283d66; }
+        .btn-danger { background-color: #ef4444; }
+        .btn-danger:hover { background-color: #dc2626; }
+        
+        .scale-footer {
+            display: flex;
+            justify-content: center;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>⚖️ ห้องเรียนกิจกรรมคานแทนค่าแสนสนุก ⚖️</h1>
+
+    <div class="top-row">
+        <div class="card config-card">
+            <h2>⚙️ ตั้งค่ากติกา (เลือกผลไม้ได้อิสระ)</h2>
+            <div class="config-grid">
+                <div class="config-item rule-row" id="rule-row-1">
+                    <select id="rule1-typeA" onchange="onRuleChange()">
+                        <option value="apple">🍎 แอปเปิ้ล</option>
+                        <option value="strawberry">🍓 สตรอว์เบอร์รี</option>
+                        <option value="orange">🍊 ส้ม</option>
+                    </select>
+                    <input type="number" id="rule1-qtyA" value="1" min="1" oninput="onRuleChange()">&nbsp;ผล =
+                    <select id="rule1-typeB" onchange="onRuleChange()">
+                        <option value="apple">🍎 แอปเปิ้ล</option>
+                        <option value="strawberry">🍓 สตรอว์เบอร์รี</option>
+                        <option value="orange" selected>🍊 ส้ม</option>
+                    </select>
+                    <input type="number" id="rule1-qtyB" value="3" min="1" oninput="onRuleChange()">&nbsp;ผล
+                    <div class="rule-error" id="rule1-error"></div>
+                </div>
+                <div class="config-item rule-row" id="rule-row-2">
+                    <select id="rule2-typeA" onchange="onRuleChange()">
+                        <option value="apple">🍎 แอปเปิ้ล</option>
+                        <option value="strawberry" selected>🍓 สตรอว์เบอร์รี</option>
+                        <option value="orange">🍊 ส้ม</option>
+                    </select>
+                    <input type="number" id="rule2-qtyA" value="1" min="1" oninput="onRuleChange()">&nbsp;ผล =
+                    <select id="rule2-typeB" onchange="onRuleChange()">
+                        <option value="apple">🍎 แอปเปิ้ล</option>
+                        <option value="strawberry">🍓 สตรอว์เบอร์รี</option>
+                        <option value="orange" selected>🍊 ส้ม</option>
+                    </select>
+                    <input type="number" id="rule2-qtyB" value="2" min="1" oninput="onRuleChange()">&nbsp;ผล
+                    <div class="rule-error" id="rule2-error"></div>
+                </div>
+            </div>
+            <div class="config-hint">💡 เลือกชนิดผลไม้และจำนวนได้อิสระ เช่น "🍓 2 ผล = 🍊 3 ผล" (ห้ามเลือกผลไม้ชนิดเดียวกันทั้งสองฝั่ง)</div>
+        </div>
+        
+        <div class="card basket-card">
+            <h2>🛒 ตะกร้าผลไม้ (แตะผลไม้ แล้วแตะที่จานเพื่อวาง)</h2>
+            <div class="items-pantry">
+                <div class="pantry-item" draggable="true" data-type="apple">🍎</div>
+                <div class="pantry-item" draggable="true" data-type="strawberry">🍓</div>
+                <div class="pantry-item" draggable="true" data-type="orange">🍊</div>
+            </div>
+            <button class="btn btn-danger" style="padding: 4px 12px; font-size: 0.85rem; margin-top: 5px;" onclick="resetAll()">🔄 รีเซ็ตกระดานใหม่</button>
+        </div>
+    </div>
+
+    <div class="bottom-row">
+        <div class="card scale-card">
+            <h2>⚖️ ตาชั่งชุดที่ 1</h2>
+            <div class="scale-wrapper">
+                <div class="beam" id="beam-1">
+                    <div class="pan pan-left" id="pan-left-1">
+                        <div class="dropzone" id="drop-left-1" data-scale="1"></div>
+                    </div>
+                    <div class="pan pan-right" id="pan-right-1">
+                        <div class="dropzone" id="drop-right-1" data-scale="1"></div>
+                    </div>
+                </div>
+                <div class="base"></div>
+            </div>
+            <div class="scale-footer">
+                <button class="btn" onclick="clearScale(1)">🧹 ล้างตาชั่งชุดที่ 1</button>
+            </div>
+        </div>
+
+        <div class="card scale-card">
+            <h2>⚖️ ตาชั่งชุดที่ 2</h2>
+            <div class="scale-wrapper">
+                <div class="beam" id="beam-2">
+                    <div class="pan pan-left" id="pan-left-2">
+                        <div class="dropzone" id="drop-left-2" data-scale="2"></div>
+                    </div>
+                    <div class="pan pan-right" id="pan-right-2">
+                        <div class="dropzone" id="drop-right-2" data-scale="2"></div>
+                    </div>
+                </div>
+                <div class="base"></div>
+            </div>
+            <div class="scale-footer">
+                <button class="btn" onclick="clearScale(2)">🧹 ล้างตาชั่งชุดที่ 2</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const fruitEmojis = { apple: '🍎', strawberry: '🍓', orange: '🍊' };
+        let draggedType = '';
+        let activeClickType = null; // สำหรับระบบ แตะเพื่อวาง (iPad)
+
+        // 1. ระบบลากวาง (Drag & Drop สำหรับ PC)
+        document.querySelectorAll('.pantry-item').forEach(item => {
+            item.addEventListener('dragstart', (e) => {
+                draggedType = e.target.getAttribute('data-type');
+                e.dataTransfer.setData('text/plain', '');
+                clearActiveClick();
+            });
+
+            // 2. ระบบแตะเพื่อวาง (Tap to Place สำหรับ iPad)
+            item.addEventListener('click', (e) => {
+                clearActiveClick();
+                activeClickType = e.target.getAttribute('data-type');
+                e.target.classList.add('selected'); // ใส่กรอบสีแดงให้รู้ว่าเลือกผลไม้นี้อยู่
+            });
+        });
+
+        function clearActiveClick() {
+            activeClickType = null;
+            document.querySelectorAll('.pantry-item').forEach(i => i.classList.remove('selected'));
+        }
+
+        // จัดการพื้นที่วางผลไม้ (Dropzone)
+        document.querySelectorAll('.dropzone').forEach(zone => {
+            // รองรับ Drag & Drop
+            zone.addEventListener('dragover', (e) => e.preventDefault());
+            zone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                if (!draggedType) return;
+                createFruit(zone, draggedType);
+            });
+
+            // รองรับ Click/Tap
+            zone.addEventListener('click', (e) => {
+                if (activeClickType && e.target === zone) {
+                    createFruit(zone, activeClickType);
+                }
+            });
+        });
+
+        // สร้างผลไม้ลงในจาน
+        function createFruit(zone, type) {
+            const newItem = document.createElement('div');
+            newItem.classList.add('placed-item');
+            newItem.innerHTML = fruitEmojis[type];
+            newItem.setAttribute('data-type', type);
+            
+            // คลิกที่ผลไม้บนตาชั่งเพื่อลบออก
+            newItem.addEventListener('click', (e) => {
+                e.stopPropagation(); // ป้องกันไม่ให้ทะลุไปโดน event คลิกของ dropzone
+                const currentZone = newItem.parentElement;
+                newItem.remove();
+                if (currentZone) {
+                    calculateScale(currentZone.getAttribute('data-scale'));
+                }
+            });
+            
+            zone.appendChild(newItem);
+            calculateScale(zone.getAttribute('data-scale'));
+        }
+
+        // อ่านกติกาทั้ง 2 ข้อจากหน้าจอ พร้อมตรวจสอบความถูกต้อง (check true)
+        function readRules() {
+            return [1, 2].map(n => ({
+                typeA: document.getElementById(`rule${n}-typeA`).value,
+                qtyA: parseInt(document.getElementById(`rule${n}-qtyA`).value) || 0,
+                typeB: document.getElementById(`rule${n}-typeB`).value,
+                qtyB: parseInt(document.getElementById(`rule${n}-qtyB`).value) || 0,
+                n
+            }));
+        }
+
+        // ตรวจกติกาว่าห้ามเลือกผลไม้ชนิดเดียวกันทั้งสองฝั่ง (เช่น 1🍓=2🍓 ไม่ถูกต้อง)
+        function validateRules(rules) {
+            rules.forEach(rule => {
+                const row = document.getElementById(`rule-row-${rule.n}`);
+                const errorBox = document.getElementById(`rule${rule.n}-error`);
+                const isSameType = rule.typeA === rule.typeB;
+                const isValidQty = rule.qtyA > 0 && rule.qtyB > 0;
+                rule.valid = !isSameType && isValidQty;
+
+                if (isSameType) {
+                    row.classList.add('invalid');
+                    errorBox.innerText = '❌ ห้ามเลือกผลไม้ชนิดเดียวกันทั้งสองฝั่ง';
+                } else {
+                    row.classList.remove('invalid');
+                    errorBox.innerText = '';
+                }
+            });
+            return rules;
+        }
+
+        // คำนวณน้ำหนักของผลไม้แต่ละชนิดจากกติกาที่ตั้งไว้ (ใช้กราฟความสัมพันธ์ ไม่ผูกกับผลไม้ชนิดใดชนิดหนึ่งตายตัว)
+        function computeWeights() {
+            const fruits = ['apple', 'strawberry', 'orange'];
+            const rules = validateRules(readRules());
+
+            const adj = { apple: [], strawberry: [], orange: [] };
+            rules.filter(r => r.valid).forEach(r => {
+                // qtyA * weight(A) = qtyB * weight(B)  =>  weight(A) = (qtyB/qtyA) * weight(B)
+                adj[r.typeA].push({ to: r.typeB, ratio: r.qtyB / r.qtyA });
+                adj[r.typeB].push({ to: r.typeA, ratio: r.qtyA / r.qtyB });
+            });
+
+            const weights = {};
+            const visited = new Set();
+            fruits.forEach(start => {
+                if (visited.has(start)) return;
+                weights[start] = 1; // ผลไม้แรกของกลุ่มที่เชื่อมกันตั้งเป็นฐาน = 1
+                visited.add(start);
+                const queue = [start];
+                while (queue.length) {
+                    const cur = queue.shift();
+                    adj[cur].forEach(edge => {
+                        if (!visited.has(edge.to)) {
+                            weights[edge.to] = weights[cur] / edge.ratio;
+                            visited.add(edge.to);
+                            queue.push(edge.to);
+                        }
+                    });
+                }
+            });
+
+            return weights;
+        }
+
+        function getWeight(type) {
+            return computeWeights()[type] || 0;
+        }
+
+        // คำนวณความเอียงของตาชั่ง
+        function calculateScale(scaleNum) {
+            let leftScore = 0;
+            let rightScore = 0;
+
+            document.querySelectorAll(`#drop-left-${scaleNum} .placed-item`).forEach(el => {
+                leftScore += getWeight(el.getAttribute('data-type'));
+            });
+
+            document.querySelectorAll(`#drop-right-${scaleNum} .placed-item`).forEach(el => {
+                rightScore += getWeight(el.getAttribute('data-type'));
+            });
+
+            const beam = document.getElementById(`beam-${scaleNum}`);
+            const panLeft = document.getElementById(`pan-left-${scaleNum}`);
+            const panRight = document.getElementById(`pan-right-${scaleNum}`);
+            
+            const difference = rightScore - leftScore;
+            
+            // คำนวณมุมเอียงของคาน (จำกัดสูงสุดที่ 15 องศาเพื่อความสวยงาม)
+            let angle = difference * 3;
+            if (angle > 15) angle = 15;
+            if (angle < -15) angle = -15;
+
+            // หมุนคานตาชั่ง
+            beam.style.transform = `rotate(${angle}deg)`;
+            
+            // หมุนจานสวนทางกับคาน (Counter-rotation) เพื่อให้จานขนานกับพื้นเสมอ
+            panLeft.style.transform = `rotate(${-angle}deg)`;
+            panRight.style.transform = `rotate(${-angle}deg)`;
+        }
+
+        // เมื่อคุณครูเปลี่ยนกติกา ให้ตรวจสอบและคำนวณใหม่ทันที
+        function onRuleChange() {
+            calculateScale(1);
+            calculateScale(2);
+        }
+
+        // ล้างจานตาชั่งรายชุด
+        function clearScale(scaleNum) {
+            document.getElementById(`drop-left-${scaleNum}`).innerHTML = '';
+            document.getElementById(`drop-right-${scaleNum}`).innerHTML = '';
+            calculateScale(scaleNum);
+        }
+
+        // ล้างทั้งหมดเพื่อเริ่มกิจกรรมใหม่
+        function resetAll() {
+            clearScale(1);
+            clearScale(2);
+            clearActiveClick();
+        }
+    </script>
+</body>
+</html>
