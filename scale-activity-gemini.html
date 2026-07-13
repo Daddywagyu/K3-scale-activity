@@ -10,13 +10,12 @@
         
         body {
             font-family: 'Mali', cursive;
-            font-size: 1rem; /* ปรับลดขนาด base font ลงให้เหมาะกับ iPad */
-            line-height: 1.4; /* ป้องกันสระ/วรรณยุกต์ภาษาไทยโดนตัด */
+            font-size: 1rem; /* ปรับขนาดฟอนต์ฐานลงเล็กน้อยให้พอดีจอ iPad */
             background: linear-gradient(135deg, #a8edea 0%, #fed6e3 25%, #fff1a6 50%, #c2e9fb 75%, #d4fc79 100%);
             background-size: 300% 300%;
             color: #333;
             margin: 0;
-            padding: 10px 15px;
+            padding: 8px 10px;
             height: 100vh;
             display: flex;
             flex-direction: column;
@@ -28,34 +27,33 @@
             color: #375286;
             text-shadow: 1px 1px #e6eeff;
             margin: 0 0 8px 0;
-            font-size: 1.8rem; /* ปรับลดขนาดเพื่อให้มีพื้นที่แนวตั้งเหลือ */
+            font-size: 2rem;
             text-align: center;
         }
 
         .top-row {
             display: flex;
-            gap: 15px;
-            margin-bottom: 12px;
-            height: auto; /* ยกเลิกการจำกัดความสูงตายตัว ป้องกัน UI ทะลุ */
-            min-height: 130px;
+            gap: 10px;
+            margin-bottom: 10px;
+            height: 135px;
         }
 
         .bottom-row {
             display: flex;
-            gap: 15px;
+            gap: 10px;
             flex: 1;
             min-height: 0;
         }
 
         .card {
             background: white;
-            border-radius: 15px;
+            border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.04);
             padding: 10px;
             border: 2px solid #e2e8f0;
         }
 
-        .config-card { flex: 1.2; }
+        .config-card { flex: 1.5; }
         .basket-card {
             flex: 1;
             text-align: center;
@@ -70,14 +68,16 @@
             flex-direction: column;
             background: #fffdf9;
             border: 2px solid #fffae6;
+            min-width: 0; /* ป้องกันไม่ให้การ์ดล้นจอ */
         }
 
         h2 {
             color: #375286;
             margin: 0 0 6px 0;
-            font-size: 1.2rem; /* ปรับให้กะทัดรัดขึ้น */
+            font-size: 1.2rem;
             border-bottom: 2px solid #f0f4f8;
             padding-bottom: 4px;
+            text-align: center;
         }
 
         /* --- โซนตั้งค่าน้ำหนัก --- */
@@ -95,18 +95,18 @@
             justify-content: center;
             background: #f8fafc;
             border: 2px solid #cbd5e1;
-            border-radius: 10px;
+            border-radius: 8px;
             padding: 4px;
-            font-size: 1rem;
+            font-size: 1.05rem;
             font-weight: 600;
-            gap: 4px;
+            gap: 2px;
         }
 
         .config-item input {
             width: 45px;
-            padding: 3px;
+            padding: 2px;
             font-family: 'Mali', cursive;
-            font-size: 1rem;
+            font-size: 1.1rem;
             text-align: center;
             border: 2px solid #375286;
             border-radius: 6px;
@@ -118,7 +118,7 @@
             font-family: 'Mali', cursive;
             font-size: 1rem;
             font-weight: 600;
-            padding: 2px 4px;
+            padding: 2px;
             border: 2px solid #375286;
             border-radius: 6px;
             background: white;
@@ -150,17 +150,17 @@
             display: flex;
             justify-content: center;
             gap: 15px;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
         }
 
         .pantry-item {
-            font-size: 2.2rem; /* ปรับเล็กลงให้พอดีจอ iPad */
-            cursor: grab;
+            font-size: 2.6rem;
+            cursor: pointer; /* เน้นให้ใช้การคลิก/แตะ */
             background: #fff;
             border: 3px solid #cbd5e1;
             border-radius: 50%;
-            width: 55px; /* ปรับลดจาก 65px */
-            height: 55px; /* ปรับลดจาก 65px */
+            width: 65px;
+            height: 65px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -173,8 +173,15 @@
         .pantry-item.selected {
             border-color: #ef4444;
             background-color: #fef2f2;
-            transform: scale(1.1);
-            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+            transform: scale(1.15);
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+        }
+
+        .basket-hint {
+            font-size: 0.9rem;
+            color: #375286;
+            font-weight: 600;
+            margin-bottom: 5px;
         }
 
         /* --- โครงสร้างตาชั่ง --- */
@@ -187,10 +194,12 @@
             justify-content: flex-end;
             padding-bottom: 25px;
             min-height: 0;
+            width: 100%;
         }
 
         .beam {
-            width: 300px; /* ลดความยาวคานลงให้พอดีสองฝั่งบน iPad */
+            width: 80%; /* ใช้ % เพื่อให้ยืดหยุ่นใน iPad */
+            max-width: 240px;
             height: 12px;
             background-color: #8b4513;
             border-radius: 6px;
@@ -203,20 +212,20 @@
         .base {
             width: 0;
             height: 0;
-            border-left: 25px solid transparent;
-            border-right: 25px solid transparent;
-            border-bottom: 50px solid #a0522d;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 40px solid #a0522d;
             z-index: 1;
             margin-top: -6px;
         }
 
         /* ตัวจาน */
         .pan {
-            width: 115px; /* ลดให้สัดส่วนเข้ากับความยาวคานใหม่ */
-            height: 14px;
+            width: 90px; /* ลดขนาดลงเล็กน้อยให้พอดี 3 ช่อง */
+            height: 12px;
             background-color: #cbd5e1;
             position: absolute;
-            top: -16px;
+            top: -14px;
             border-radius: 6px;
             display: flex;
             flex-direction: column;
@@ -226,12 +235,12 @@
             transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        .pan-left { left: -8px; }
-        .pan-right { right: -8px; }
+        .pan-left { left: -15px; }
+        .pan-right { right: -15px; }
 
         .dropzone {
             width: 100%;
-            height: 75px; /* ปรับลดพื้นที่จานให้พอดีการแตะ */
+            height: 140px; /* ขยายพื้นที่วางให้แตะได้ง่ายขึ้นมากใน iPad */
             display: flex;
             flex-wrap: wrap-reverse;
             justify-content: center;
@@ -241,15 +250,27 @@
             box-sizing: border-box;
             border-radius: 10px;
             cursor: pointer;
+            border: 2px dashed transparent;
+            transition: background-color 0.2s, border 0.2s;
         }
         
-        .dropzone:hover { background-color: rgba(255, 255, 255, 0.3); }
+        .dropzone:hover { background-color: rgba(255, 255, 255, 0.4); }
+
+        /* การแสดงผลเมื่อแตะเลือกผลไม้ แล้วพร้อมวาง (Visual Feedback) */
+        body.is-placing .dropzone {
+            background-color: rgba(255, 255, 255, 0.6);
+            border-color: #375286;
+        }
+        body.is-placing .dropzone:hover {
+            background-color: #e6eeff;
+            border-color: #ef4444;
+        }
 
         /* ผลไม้ในจานวาง */
         .dropzone .placed-item {
-            font-size: 1.6rem; /* ย่อผลไม้ในจานเพื่อไม่ให้ล้น */
-            width: 34px;
-            height: 34px;
+            font-size: 1.7rem; /* ปรับขนาดให้พอดีพื้นที่ */
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -269,8 +290,8 @@
             background-color: #375286;
             color: white;
             border: none;
-            padding: 5px 12px;
-            font-size: 1rem;
+            padding: 6px 10px;
+            font-size: 0.95rem;
             font-family: 'Mali', cursive;
             border-radius: 8px;
             cursor: pointer;
@@ -284,7 +305,8 @@
         .scale-footer {
             display: flex;
             justify-content: center;
-            margin-top: 5px;
+            margin-top: auto;
+            padding-top: 5px;
         }
     </style>
 </head>
@@ -327,21 +349,24 @@
                     <div class="rule-error" id="rule2-error"></div>
                 </div>
             </div>
-            <div class="config-hint">💡 เลือกชนิดผลไม้และจำนวนได้อิสระ เช่น "🍓 2 ผล = 🍊 3 ผล" (ห้ามเลือกผลไม้ชนิดเดียวกันทั้งสองฝั่ง)</div>
+            <div class="config-hint">💡 เลือกผลไม้และจำนวนได้อิสระ (ห้ามเลือกชนิดเดียวกันทั้งสองฝั่ง)</div>
         </div>
         
         <div class="card basket-card">
-            <h2>🛒 ตะกร้าผลไม้ (แตะผลไม้ แล้วแตะที่จานเพื่อวาง)</h2>
+            <h2>🛒 ตะกร้าผลไม้</h2>
+            <div class="basket-hint">👉 แตะที่ผลไม้ แล้วแตะที่จานเพื่อวาง 👈</div>
             <div class="items-pantry">
                 <div class="pantry-item" draggable="true" data-type="apple">🍎</div>
                 <div class="pantry-item" draggable="true" data-type="strawberry">🍓</div>
                 <div class="pantry-item" draggable="true" data-type="orange">🍊</div>
             </div>
-            <button class="btn btn-danger" style="padding: 4px 12px; font-size: 0.85rem; margin-top: 5px;" onclick="resetAll()">🔄 รีเซ็ตกระดานใหม่</button>
+            <button class="btn btn-danger" style="padding: 4px 12px; font-size: 0.85rem;" onclick="resetAll()">🔄 รีเซ็ตกระดานใหม่</button>
         </div>
     </div>
 
+    <!-- แถวตาชั่ง เปลี่ยนเป็น 3 ชุด -->
     <div class="bottom-row">
+        <!-- ตาชั่งชุดที่ 1 -->
         <div class="card scale-card">
             <h2>⚖️ ตาชั่งชุดที่ 1</h2>
             <div class="scale-wrapper">
@@ -356,10 +381,11 @@
                 <div class="base"></div>
             </div>
             <div class="scale-footer">
-                <button class="btn" onclick="clearScale(1)">🧹 ล้างตาชั่งชุดที่ 1</button>
+                <button class="btn" onclick="clearScale(1)">🧹 ล้างตาชั่ง</button>
             </div>
         </div>
 
+        <!-- ตาชั่งชุดที่ 2 -->
         <div class="card scale-card">
             <h2>⚖️ ตาชั่งชุดที่ 2</h2>
             <div class="scale-wrapper">
@@ -374,7 +400,26 @@
                 <div class="base"></div>
             </div>
             <div class="scale-footer">
-                <button class="btn" onclick="clearScale(2)">🧹 ล้างตาชั่งชุดที่ 2</button>
+                <button class="btn" onclick="clearScale(2)">🧹 ล้างตาชั่ง</button>
+            </div>
+        </div>
+
+        <!-- ตาชั่งชุดที่ 3 (เพิ่มใหม่) -->
+        <div class="card scale-card">
+            <h2>⚖️ ตาชั่งชุดที่ 3</h2>
+            <div class="scale-wrapper">
+                <div class="beam" id="beam-3">
+                    <div class="pan pan-left" id="pan-left-3">
+                        <div class="dropzone" id="drop-left-3" data-scale="3"></div>
+                    </div>
+                    <div class="pan pan-right" id="pan-right-3">
+                        <div class="dropzone" id="drop-right-3" data-scale="3"></div>
+                    </div>
+                </div>
+                <div class="base"></div>
+            </div>
+            <div class="scale-footer">
+                <button class="btn" onclick="clearScale(3)">🧹 ล้างตาชั่ง</button>
             </div>
         </div>
     </div>
@@ -382,8 +427,9 @@
     <script>
         const fruitEmojis = { apple: '🍎', strawberry: '🍓', orange: '🍊' };
         let draggedType = '';
-        let activeClickType = null;
+        let activeClickType = null; // สำหรับระบบ แตะเพื่อวาง (iPad)
 
+        // 1. ระบบลากวาง (Drag & Drop สำหรับ PC)
         document.querySelectorAll('.pantry-item').forEach(item => {
             item.addEventListener('dragstart', (e) => {
                 draggedType = e.target.getAttribute('data-type');
@@ -391,19 +437,24 @@
                 clearActiveClick();
             });
 
+            // 2. ระบบแตะเพื่อวาง (Tap to Place สำหรับ iPad) ทำงานได้ดีกว่าบนจอสัมผัส
             item.addEventListener('click', (e) => {
                 clearActiveClick();
                 activeClickType = e.target.getAttribute('data-type');
-                e.target.classList.add('selected');
+                e.target.classList.add('selected'); // ใส่กรอบสีแดงให้รู้ว่าเลือกผลไม้นี้อยู่
+                document.body.classList.add('is-placing'); // เพิ่มคลาสเพื่อให้ dropzone สว่างขึ้น
             });
         });
 
         function clearActiveClick() {
             activeClickType = null;
             document.querySelectorAll('.pantry-item').forEach(i => i.classList.remove('selected'));
+            document.body.classList.remove('is-placing');
         }
 
+        // จัดการพื้นที่วางผลไม้ (Dropzone)
         document.querySelectorAll('.dropzone').forEach(zone => {
+            // รองรับ Drag & Drop (PC)
             zone.addEventListener('dragover', (e) => e.preventDefault());
             zone.addEventListener('drop', (e) => {
                 e.preventDefault();
@@ -411,21 +462,25 @@
                 createFruit(zone, draggedType);
             });
 
+            // รองรับ Click/Tap (iPad)
             zone.addEventListener('click', (e) => {
-                if (activeClickType && e.target === zone) {
+                if (activeClickType && (e.target === zone || e.target.parentElement === zone)) {
                     createFruit(zone, activeClickType);
+                    // ไม่ clearActiveClick() ตรงนี้ เพื่อให้แตะวางรัวๆ ได้
                 }
             });
         });
 
+        // สร้างผลไม้ลงในจาน
         function createFruit(zone, type) {
             const newItem = document.createElement('div');
             newItem.classList.add('placed-item');
             newItem.innerHTML = fruitEmojis[type];
             newItem.setAttribute('data-type', type);
             
+            // คลิกที่ผลไม้บนตาชั่งเพื่อลบออก
             newItem.addEventListener('click', (e) => {
-                e.stopPropagation();
+                e.stopPropagation(); // ป้องกันไม่ให้ทะลุไปโดน event คลิกของ dropzone
                 const currentZone = newItem.parentElement;
                 newItem.remove();
                 if (currentZone) {
@@ -437,6 +492,7 @@
             calculateScale(zone.getAttribute('data-scale'));
         }
 
+        // อ่านกติกา
         function readRules() {
             return [1, 2].map(n => ({
                 typeA: document.getElementById(`rule${n}-typeA`).value,
@@ -457,7 +513,7 @@
 
                 if (isSameType) {
                     row.classList.add('invalid');
-                    errorBox.innerText = '❌ ห้ามเลือกผลไม้ชนิดเดียวกันทั้งสองฝั่ง';
+                    errorBox.innerText = '❌ ห้ามเลือกชนิดเดียวกัน';
                 } else {
                     row.classList.remove('invalid');
                     errorBox.innerText = '';
@@ -480,7 +536,7 @@
             const visited = new Set();
             fruits.forEach(start => {
                 if (visited.has(start)) return;
-                weights[start] = 1;
+                weights[start] = 1; 
                 visited.add(start);
                 const queue = [start];
                 while (queue.length) {
@@ -502,6 +558,7 @@
             return computeWeights()[type] || 0;
         }
 
+        // คำนวณความเอียงของตาชั่ง (เพิ่มสเกลการเอียงให้มากขึ้น)
         function calculateScale(scaleNum) {
             let leftScore = 0;
             let rightScore = 0;
@@ -520,32 +577,47 @@
             
             const difference = rightScore - leftScore;
             
-            let angle = difference * 3;
-            if (angle > 15) angle = 15;
-            if (angle < -15) angle = -15;
+            // ปรับตัวคูณความเอียงจาก 3 เป็น 7 และจำกัดสูงสุดที่ 25 องศา เพื่อให้เห็นชัดเจนขึ้น
+            let angle = difference * 7;
+            if (angle > 25) angle = 25;
+            if (angle < -25) angle = -25;
 
+            // หมุนคานตาชั่ง
             beam.style.transform = `rotate(${angle}deg)`;
             
+            // หมุนจานสวนทางกับคาน (Counter-rotation)
             panLeft.style.transform = `rotate(${-angle}deg)`;
             panRight.style.transform = `rotate(${-angle}deg)`;
         }
 
+        // เมื่อเปลี่ยนกติกา ให้คำนวณใหม่ทั้ง 3 ตาชั่ง
         function onRuleChange() {
             calculateScale(1);
             calculateScale(2);
+            calculateScale(3);
         }
 
+        // ล้างจานตาชั่งรายชุด
         function clearScale(scaleNum) {
             document.getElementById(`drop-left-${scaleNum}`).innerHTML = '';
             document.getElementById(`drop-right-${scaleNum}`).innerHTML = '';
             calculateScale(scaleNum);
         }
 
+        // ล้างทั้งหมดเพื่อเริ่มใหม่
         function resetAll() {
             clearScale(1);
             clearScale(2);
+            clearScale(3);
             clearActiveClick();
         }
+        
+        // แตะพื้นที่ว่างอื่นๆ เพื่อยกเลิกการเลือกผลไม้
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.pantry-item') && !e.target.closest('.dropzone')) {
+                clearActiveClick();
+            }
+        });
     </script>
 </body>
 </html>
