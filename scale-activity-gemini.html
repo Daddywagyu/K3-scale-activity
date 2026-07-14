@@ -16,11 +16,11 @@
             color: #333;
             margin: 0;
             padding: 10px 10px;
-            min-height: 100vh; /* เปลี่ยนจาก height เพื่อให้เลื่อนจอได้ถ้าพื้นที่ไม่พอ */
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
-            overflow-y: auto; /* อนุญาตให้เลื่อนหน้าจอได้ ป้องกันข้อความตกขอบ */
+            overflow-y: auto;
         }
 
         h1 {
@@ -35,7 +35,6 @@
             display: flex;
             gap: 10px;
             margin-bottom: 10px;
-            /* เอา height: 135px ออก เพื่อให้กล่องขยายตามความสูงของเนื้อหาอัตโนมัติ */
             flex-shrink: 0; 
         }
 
@@ -43,7 +42,7 @@
             display: flex;
             gap: 10px;
             flex: 1;
-            min-height: 350px; /* กำหนดความสูงขั้นต่ำให้ตาชั่งไม่โดนบีบ */
+            min-height: 400px; /* เพิ่มความสูงเล็กน้อยเผื่อปุ่มกด */
         }
 
         .card {
@@ -188,6 +187,7 @@
             color: #375286;
             font-weight: 600;
             margin-bottom: 8px;
+            transition: all 0.2s;
         }
 
         /* --- โครงสร้างตาชั่ง --- */
@@ -198,7 +198,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: flex-end;
-            padding-bottom: 25px;
+            padding-bottom: 45px; /* เผื่อพื้นที่ให้แผงปุ่มควบคุมด้านล่าง */
             min-height: 0;
             width: 100%;
         }
@@ -225,7 +225,6 @@
             margin-top: -6px;
         }
 
-        /* ตัวจาน (ขยายให้กว้างขึ้น) */
         .pan {
             width: 110px; 
             height: 12px;
@@ -244,10 +243,66 @@
         .pan-left { left: -20px; }
         .pan-right { right: -20px; }
 
-        /* พื้นที่วางผลไม้ (แก้ปัญหาการกดลบโดยไม่ได้ตั้งใจ) */
+        /* แผงควบคุมปุ่ม + และ - ใต้จานชั่ง */
+        .pan-controls {
+            position: absolute;
+            bottom: -38px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 2px solid #cbd5e1;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .ctrl-btn {
+            font-size: 1rem;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+        }
+
+        .add-btn {
+            color: white;
+            background-color: #16a34a;
+            border: 2px solid #15803d;
+        }
+        
+        .sub-btn {
+            color: white;
+            background-color: #dc2626;
+            border: 2px solid #b91c1c;
+        }
+
+        .ctrl-btn:active { transform: scale(0.85); }
+
+        /* อนิเมชั่นไฟกระพริบให้ปุ่มบวก เมื่อมีการเลือกผลไม้ */
+        body.is-placing .add-btn {
+            animation: pulse-green 1.5s infinite;
+        }
+
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.6); }
+            70% { box-shadow: 0 0 0 8px rgba(22, 163, 74, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+        }
+
+        /* พื้นที่วางผลไม้ (ตอนนี้มีไว้แสดงผลเฉยๆ กดไม่ได้แล้ว) */
         .dropzone {
-            width: 140px; /* ขยายให้กว้างกว่าจาน เพื่อให้มีพื้นที่กดด้านข้าง */
-            height: 180px; /* ขยายให้สูงขึ้น เพื่อให้มีพื้นที่กดด้านบนผลไม้ */
+            width: 140px; 
+            height: 180px; 
             display: flex;
             flex-wrap: wrap-reverse;
             justify-content: center;
@@ -255,29 +310,9 @@
             gap: 2px;
             padding: 5px;
             box-sizing: border-box;
-            border-radius: 12px;
-            cursor: pointer;
-            /* เพิ่มเส้นประบางๆ เป็นไกด์ให้เด็กๆ รู้ว่าสามารถแตะในกรอบนี้ได้ทั้งหมด */
-            border: 2px dashed rgba(55, 82, 134, 0.2);
-            background-color: rgba(255, 255, 255, 0.15);
-            transition: background-color 0.2s, border 0.2s;
             margin-bottom: 2px;
         }
-        
-        .dropzone:hover { background-color: rgba(255, 255, 255, 0.5); }
 
-        /* การแสดงผลเมื่อแตะเลือกผลไม้ แล้วพร้อมวาง */
-        body.is-placing .dropzone {
-            background-color: rgba(240, 248, 255, 0.9);
-            border-color: #375286;
-            border-width: 3px;
-        }
-        body.is-placing .dropzone:hover {
-            background-color: #e6eeff;
-            border-color: #ef4444;
-        }
-
-        /* ผลไม้ในจานวาง */
         .dropzone .placed-item {
             font-size: 1.7rem; 
             width: 32px;
@@ -285,18 +320,18 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
             user-select: none;
-            transition: transform 0.1s;
+            /* ป้องกันการกดไปโดนผลไม้บนจานอย่างเด็ดขาด */
+            pointer-events: none; 
+            transition: transform 0.2s;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .dropzone .placed-item:hover {
-            transform: scale(1.2);
-            background: rgba(239, 68, 68, 0.2);
-            border-radius: 50%;
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
         }
 
-        /* ปุ่มกดต่างๆ */
         .btn {
             background-color: #375286;
             color: white;
@@ -365,7 +400,7 @@
         
         <div class="card basket-card">
             <h2>🛒 ตะกร้าผลไม้</h2>
-            <div class="basket-hint">👉 แตะที่ผลไม้ แล้วแตะที่จานชั่ง 👈</div>
+            <div class="basket-hint" id="main-hint">👉 แตะผลไม้ แล้วกดปุ่ม ➕ ใต้จานชั่ง 👈</div>
             <div class="items-pantry">
                 <div class="pantry-item" draggable="true" data-type="apple">🍎</div>
                 <div class="pantry-item" draggable="true" data-type="strawberry">🍓</div>
@@ -382,9 +417,17 @@
                 <div class="beam" id="beam-1">
                     <div class="pan pan-left" id="pan-left-1">
                         <div class="dropzone" id="drop-left-1" data-scale="1"></div>
+                        <div class="pan-controls">
+                            <div class="ctrl-btn add-btn" onclick="handleAdd(1, 'left')">➕</div>
+                            <div class="ctrl-btn sub-btn" onclick="handleRemove(1, 'left')">➖</div>
+                        </div>
                     </div>
                     <div class="pan pan-right" id="pan-right-1">
                         <div class="dropzone" id="drop-right-1" data-scale="1"></div>
+                        <div class="pan-controls">
+                            <div class="ctrl-btn add-btn" onclick="handleAdd(1, 'right')">➕</div>
+                            <div class="ctrl-btn sub-btn" onclick="handleRemove(1, 'right')">➖</div>
+                        </div>
                     </div>
                 </div>
                 <div class="base"></div>
@@ -400,9 +443,17 @@
                 <div class="beam" id="beam-2">
                     <div class="pan pan-left" id="pan-left-2">
                         <div class="dropzone" id="drop-left-2" data-scale="2"></div>
+                        <div class="pan-controls">
+                            <div class="ctrl-btn add-btn" onclick="handleAdd(2, 'left')">➕</div>
+                            <div class="ctrl-btn sub-btn" onclick="handleRemove(2, 'left')">➖</div>
+                        </div>
                     </div>
                     <div class="pan pan-right" id="pan-right-2">
                         <div class="dropzone" id="drop-right-2" data-scale="2"></div>
+                        <div class="pan-controls">
+                            <div class="ctrl-btn add-btn" onclick="handleAdd(2, 'right')">➕</div>
+                            <div class="ctrl-btn sub-btn" onclick="handleRemove(2, 'right')">➖</div>
+                        </div>
                     </div>
                 </div>
                 <div class="base"></div>
@@ -418,9 +469,17 @@
                 <div class="beam" id="beam-3">
                     <div class="pan pan-left" id="pan-left-3">
                         <div class="dropzone" id="drop-left-3" data-scale="3"></div>
+                        <div class="pan-controls">
+                            <div class="ctrl-btn add-btn" onclick="handleAdd(3, 'left')">➕</div>
+                            <div class="ctrl-btn sub-btn" onclick="handleRemove(3, 'left')">➖</div>
+                        </div>
                     </div>
                     <div class="pan pan-right" id="pan-right-3">
                         <div class="dropzone" id="drop-right-3" data-scale="3"></div>
+                        <div class="pan-controls">
+                            <div class="ctrl-btn add-btn" onclick="handleAdd(3, 'right')">➕</div>
+                            <div class="ctrl-btn sub-btn" onclick="handleRemove(3, 'right')">➖</div>
+                        </div>
                     </div>
                 </div>
                 <div class="base"></div>
@@ -436,16 +495,18 @@
         let draggedType = '';
         let activeClickType = null; 
 
-        // 1. ระบบลากวาง (Drag & Drop สำหรับ PC)
+        // ระบบเลือกผลไม้
         document.querySelectorAll('.pantry-item').forEach(item => {
+            // ลากวาง (สำหรับ Desktop)
             item.addEventListener('dragstart', (e) => {
                 draggedType = e.target.getAttribute('data-type');
                 e.dataTransfer.setData('text/plain', '');
                 clearActiveClick();
             });
 
-            // 2. ระบบแตะเพื่อวาง (Tap to Place สำหรับ iPad)
+            // แตะเลือก (สำหรับ iPad)
             item.addEventListener('click', (e) => {
+                e.stopPropagation();
                 clearActiveClick();
                 activeClickType = e.target.getAttribute('data-type');
                 e.target.classList.add('selected');
@@ -459,7 +520,7 @@
             document.body.classList.remove('is-placing');
         }
 
-        // จัดการพื้นที่วางผลไม้ (Dropzone)
+        // ระบบ Drag and drop ลงจาน (ยังคงไว้เผื่อใช้งานบนคอมพิวเตอร์)
         document.querySelectorAll('.dropzone').forEach(zone => {
             zone.addEventListener('dragover', (e) => e.preventDefault());
             zone.addEventListener('drop', (e) => {
@@ -467,33 +528,62 @@
                 if (!draggedType) return;
                 createFruit(zone, draggedType);
             });
-
-            zone.addEventListener('click', (e) => {
-                if (activeClickType && (e.target === zone || e.target.parentElement === zone)) {
-                    createFruit(zone, activeClickType);
-                }
-            });
         });
 
-        // สร้างผลไม้ลงในจาน
+        // ฟังก์ชันสร้างผลไม้ลงในจาน
         function createFruit(zone, type) {
             const newItem = document.createElement('div');
             newItem.classList.add('placed-item');
             newItem.innerHTML = fruitEmojis[type];
             newItem.setAttribute('data-type', type);
             
-            // คลิกที่ผลไม้บนตาชั่งเพื่อลบออก
-            newItem.addEventListener('click', (e) => {
-                e.stopPropagation(); 
-                const currentZone = newItem.parentElement;
-                newItem.remove();
-                if (currentZone) {
-                    calculateScale(currentZone.getAttribute('data-scale'));
-                }
-            });
-            
             zone.appendChild(newItem);
-            calculateScale(zone.getAttribute('data-scale'));
+            
+            // อ่านค่า data-scale ว่าเป็นตาชั่งที่เท่าไหร่จากการหาใน parent (เนื่องจาก zone มีข้อมูลอยู่แล้ว)
+            let scaleNum = zone.id.split('-')[2];
+            calculateScale(scaleNum);
+        }
+
+        // ฟังก์ชันจัดการปุ่ม +
+        function handleAdd(scaleNum, side) {
+            if (!activeClickType) {
+                // แจ้งเตือนกระพริบให้เลือกผลไม้ก่อน
+                const hint = document.getElementById('main-hint');
+                hint.style.color = '#ef4444';
+                hint.style.transform = 'scale(1.1)';
+                hint.innerText = '❌ โปรดแตะเลือกผลไม้ในตะกร้าก่อน ❌';
+                setTimeout(() => {
+                    hint.style.color = '#375286';
+                    hint.style.transform = 'scale(1)';
+                    hint.innerText = '👉 แตะผลไม้ แล้วกดปุ่ม ➕ ใต้จานชั่ง 👈';
+                }, 1500);
+                return;
+            }
+            const zone = document.getElementById(`drop-${side}-${scaleNum}`);
+            createFruit(zone, activeClickType);
+        }
+
+        // ฟังก์ชันจัดการปุ่ม -
+        function handleRemove(scaleNum, side) {
+            const zone = document.getElementById(`drop-${side}-${scaleNum}`);
+            
+            if (activeClickType) {
+                // ถ้าเลือกผลไม้อยู่ ให้หาและลบผลไม้ "ชนิดที่เลือก" ชิ้นล่าสุด
+                const items = Array.from(zone.querySelectorAll('.placed-item'));
+                for (let i = items.length - 1; i >= 0; i--) {
+                    if (items[i].getAttribute('data-type') === activeClickType) {
+                        items[i].remove();
+                        calculateScale(scaleNum);
+                        return;
+                    }
+                }
+            } else {
+                // ถ้าไม่ได้เลือกผลไม้อะไร ให้ลบผลไม้ชิ้นบนสุด (ชิ้นล่าสุด) เสมือนปุ่ม Undo
+                if (zone.lastElementChild) {
+                    zone.lastElementChild.remove();
+                    calculateScale(scaleNum);
+                }
+            }
         }
 
         function readRules() {
@@ -584,6 +674,7 @@
             if (angle < -25) angle = -25;
 
             beam.style.transform = `rotate(${angle}deg)`;
+            // จานชั่งจะหมุนสวนทางเสมอเพื่อให้ขนานกับพื้น และแผงปุ่มที่อยู่ด้านในก็จะขนานพื้นเสมอเช่นกัน
             panLeft.style.transform = `rotate(${-angle}deg)`;
             panRight.style.transform = `rotate(${-angle}deg)`;
         }
@@ -607,8 +698,9 @@
             clearActiveClick();
         }
         
+        // เมื่อแตะที่พื้นที่ว่างๆ ในหน้าจอ ให้ยกเลิกการเลือกผลไม้
         document.addEventListener('click', (e) => {
-            if (!e.target.closest('.pantry-item') && !e.target.closest('.dropzone')) {
+            if (!e.target.closest('.pantry-item') && !e.target.closest('.pan-controls')) {
                 clearActiveClick();
             }
         });
