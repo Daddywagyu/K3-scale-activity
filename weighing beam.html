@@ -1,0 +1,1307 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>สื่อการสอน Interactive: สิ่งของใดหนักกว่ากัน?</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --surface: #ffffff;
+      --surface-soft: #eef3f9;
+      --border: #d8e1ee;
+      --ink: #1e293b;
+      --muted: #64748b;
+      --brand: #2563eb;
+      --brand-hover: #1d4ed8;
+      --brand-soft: #dbeafe;
+      --success: #16a34a;
+      --success-soft: #dcfce7;
+      --danger: #dc2626;
+      --danger-soft: #fee2e2;
+      --amber: #d97706;
+      --amber-soft: #fef3c7;
+      --radius: 16px;
+      --shadow: 0 4px 16px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+      --font: "Sarabun", "Prompt", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.6;
+    }
+
+    .app-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .header-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .title-group h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .title-group p {
+      margin: 4px 0 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .mode-tabs {
+      display: flex;
+      gap: 8px;
+      background: var(--surface-soft);
+      padding: 5px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .tab-btn:hover {
+      color: var(--ink);
+    }
+
+    .tab-btn.active {
+      background: var(--surface);
+      color: var(--brand);
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.1);
+    }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* Concept Cards Bar */
+    .principles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .principle-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+    }
+
+    .principle-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: var(--brand-soft);
+      color: var(--brand);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 15px;
+    }
+
+    .principle-card h3 {
+      margin: 0 0 2px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .principle-card p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* Question Selector Bar */
+    .quiz-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .question-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .q-pill {
+      font: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 8px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--ink);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .q-pill:hover {
+      border-color: var(--brand);
+    }
+
+    .q-pill.active {
+      background: var(--brand);
+      color: #ffffff;
+      border-color: var(--brand);
+    }
+
+    .q-pill.solved-correct {
+      border-color: var(--success);
+      background: var(--success-soft);
+      color: #14532d;
+    }
+
+    .q-pill.active.solved-correct {
+      background: var(--brand);
+      color: #ffffff;
+    }
+
+    .score-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .score-badge {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* Main Question Card */
+    .question-workspace {
+      display: grid;
+      grid-template-columns: 1.55fr 1fr;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 860px) {
+      .question-workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    .stage-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .q-number-badge {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .rule-tag {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--amber-soft);
+      color: #92400e;
+    }
+
+    .svg-stage {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 290px;
+      position: relative;
+    }
+
+    .svg-stage svg {
+      width: 100%;
+      max-width: 560px;
+      height: auto;
+      overflow: visible;
+    }
+
+    .stage-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .btn {
+      font: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 9px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--ink);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+    }
+
+    .btn:hover {
+      background: var(--surface-soft);
+    }
+
+    .btn-primary {
+      background: var(--brand);
+      color: #ffffff;
+      border-color: var(--brand);
+    }
+
+    .btn-primary:hover {
+      background: var(--brand-hover);
+    }
+
+    .btn-hint {
+      background: var(--amber-soft);
+      color: #92400e;
+      border-color: #fde68a;
+    }
+
+    .btn-hint:hover {
+      background: #fde68a;
+    }
+
+    /* Choices Column */
+    .answer-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .prompt-title {
+      margin: 0 0 6px;
+      font-size: 19px;
+      font-weight: 700;
+    }
+
+    .prompt-subtitle {
+      margin: 0 0 16px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .choices-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .choice-card {
+      font: inherit;
+      background: var(--surface);
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      padding: 18px 12px 12px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 155px;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+      position: relative;
+    }
+
+    .choice-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
+      border-color: var(--brand);
+    }
+
+    .choice-card.correct {
+      border-color: var(--success);
+      background: var(--success-soft);
+    }
+
+    .choice-card.wrong {
+      border-color: var(--danger);
+      background: var(--danger-soft);
+    }
+
+    .choice-label-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .choice-desc {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .feedback-box {
+      border-radius: 12px;
+      padding: 16px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    .feedback-box.correct {
+      background: var(--success-soft);
+      border-color: #86efac;
+      color: #14532d;
+    }
+
+    .feedback-box.wrong {
+      background: var(--danger-soft);
+      border-color: #fca5a5;
+      color: #7f1d1d;
+    }
+
+    .feedback-box h4 {
+      margin: 0 0 6px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .feedback-box p {
+      margin: 0;
+    }
+
+    .nav-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Sandbox Lab Mode */
+    .hidden {
+      display: none !important;
+    }
+
+    .lab-layout {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 860px) {
+      .lab-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .control-group {
+      margin-bottom: 18px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .control-group:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .control-group label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--brand);
+      cursor: pointer;
+    }
+
+    .preset-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .status-balanced {
+      background: var(--success-soft);
+      color: #14532d;
+    }
+
+    .status-tilted {
+      background: var(--amber-soft);
+      color: #92400e;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="title-group">
+        <h1>⚖️ สื่อการสอน Interactive: สิ่งของใดหนักกว่า?</h1>
+        <p>เรียนรู้เรื่องการเปรียบเทียบน้ำหนักและหลักการสมดุลของคาน (ใกล้จุดหมุนกว่า = หนักกว่า)</p>
+      </div>
+      <div class="mode-tabs" role="tablist">
+        <button class="tab-btn active" id="tabQuizBtn" onclick="switchMode('quiz')">แบบฝึกหัดตามใบงาน (5 ข้อ)</button>
+        <button class="tab-btn" id="tabLabBtn" onclick="switchMode('lab')">ห้องทดลองคานสมดุล (ทดลองเล่น)</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Summary of Key Principles -->
+    <section class="principles-grid" aria-label="หลักการสังเกต">
+      <div class="principle-card">
+        <div class="principle-badge">1</div>
+        <div>
+          <h3>ระยะห่างจากจุดหมุน (ข้อ 1–3)</h3>
+          <p>เมื่อคานตั้งตรงสมดุล สิ่งของที่อยู่ <strong>ใกล้จุดหมุนมากกว่า</strong> จะมีน้ำหนัก <strong>มากกว่า</strong></p>
+        </div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-badge">2</div>
+        <div>
+          <h3>ตัดสิ่งที่เหมือนกันออก (ข้อ 4)</h3>
+          <p>หากมีวัตถุเหมือนกันทั้ง 2 ฝั่ง ให้ตัดออกเท่าๆ กัน แล้วดูว่าฝั่งใดเอียงลง (ฝั่งต่ำกว่า = หนักกว่า)</p>
+        </div>
+      </div>
+      <div class="principle-card">
+        <div class="principle-badge">3</div>
+        <div>
+          <h3>เปรียบเทียบจำนวนชิ้น (ข้อ 5)</h3>
+          <p>เมื่อคานสมดุล ฝั่งที่ใช้ <strong>จำนวนชิ้นน้อยกว่า</strong> แต่ถ่วงดุลได้เท่ากัน แปลว่าแต่ละชิ้น <strong>หนักกว่า</strong></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODE 1: WORKSHEET INTERACTIVE QUIZ -->
+    <section id="quizSection">
+      <div class="quiz-toolbar">
+        <div class="question-pills" id="questionPills"></div>
+        <div class="score-box">
+          <span class="score-badge" id="scoreBadge">ตอบถูก 0 / 5 ข้อ</span>
+          <button class="btn" onclick="resetAllQuiz()">เริ่มทำใหม่ทั้งหมด</button>
+        </div>
+      </div>
+
+      <div class="question-workspace">
+        <!-- Left: Interactive Visual Stage -->
+        <div class="card">
+          <div class="stage-header">
+            <div class="q-number-badge">
+              <span id="qHeaderTitle">ข้อที่ 1</span>
+            </div>
+            <span class="rule-tag" id="qRuleTag">หลักการ: ใกล้จุดหมุนกว่า = หนักกว่า</span>
+          </div>
+
+          <div class="svg-stage" id="svgStage">
+            <!-- Dynamically rendered SVG for each question -->
+          </div>
+
+          <div class="stage-controls">
+            <button class="btn btn-hint" id="toggleGuideBtn" onclick="toggleVisualGuide()">
+              🔍 แสดงเส้นช่วยสังเกต / คำอธิบายภาพ
+            </button>
+            <button class="btn" id="stepActionBtn" onclick="triggerSpecialStep()" style="display:none;">
+              ✨ ทดลองเอาลูกกลมสีขาวออกฝั่งละ 1 ลูก
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Answer Selection & Explanation -->
+        <div class="card answer-panel">
+          <div>
+            <h2 class="prompt-title">สิ่งของใดมีน้ำหนักมากกว่ากัน?</h2>
+            <p class="prompt-subtitle" id="qPromptSubtitle">สังเกตตำแหน่งของรูปทรงบนคาน แล้วคลิกเลือกคำตอบ ก. หรือ ข.</p>
+
+            <div class="choices-grid">
+              <button class="choice-card" id="choiceBtnA" onclick="selectAnswer('ก')">
+                <div id="choiceSvgA"></div>
+                <div class="choice-label-row">
+                  <span>ก.</span>
+                  <span class="choice-desc" id="choiceDescA"></span>
+                </div>
+              </button>
+
+              <button class="choice-card" id="choiceBtnB" onclick="selectAnswer('ข')">
+                <div id="choiceSvgB"></div>
+                <div class="choice-label-row">
+                  <span>ข.</span>
+                  <span class="choice-desc" id="choiceDescB"></span>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <div class="feedback-box" id="feedbackBox">
+            <h4>💡 คำแนะนำ</h4>
+            <p>เลือกคำตอบ <strong>ก.</strong> หรือ <strong>ข.</strong> ด้านบน หรือกดปุ่ม <em>"แสดงเส้นช่วยสังเกต"</em> เพื่อดูวิธีคิด</p>
+          </div>
+
+          <div class="nav-footer">
+            <button class="btn" id="prevQBtn" onclick="changeQuestion(-1)">← ข้อก่อนหน้า</button>
+            <button class="btn btn-primary" id="nextQBtn" onclick="changeQuestion(1)">ข้อถัดไป →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODE 2: INTERACTIVE SEESAW SANDBOX LAB -->
+    <section id="labSection" class="hidden">
+      <div class="lab-layout">
+        <div class="card">
+          <div class="stage-header">
+            <div class="q-number-badge">🧪 ห้องทดลองคานดีดคานงัด</div>
+            <span class="status-pill status-balanced" id="labStatusBadge">คานสมดุลพอดี!</span>
+          </div>
+
+          <div class="svg-stage" id="labSvgStage">
+            <!-- Rendered by updateLab() -->
+          </div>
+
+          <div class="preset-buttons">
+            <span style="font-size:13px;font-weight:700;color:var(--muted);align-self:center;">ตั้งค่าตามโจทย์:</span>
+            <button class="btn" onclick="loadLabPreset(1)">จำลองข้อ 1</button>
+            <button class="btn" onclick="loadLabPreset(2)">จำลองข้อ 2</button>
+            <button class="btn" onclick="loadLabPreset(3)">จำลองข้อ 3</button>
+            <button class="btn" onclick="loadLabPreset(5)">จำลองข้อ 5</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="prompt-title" style="margin-bottom:14px;">ปรับค่าเพื่อทดลองและสังเกตผล</h2>
+
+          <div class="control-group">
+            <label>
+              <span>🟦 น้ำหนักวัตถุฝั่งซ้าย</span>
+              <span id="leftWeightVal">3 หน่วย</span>
+            </label>
+            <div class="slider-row">
+              <input type="range" id="leftWeightSlider" min="1" max="6" step="1" value="3" oninput="updateLab()">
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label>
+              <span>📏 ระยะห่างฝั่งซ้ายจากจุดหมุน</span>
+              <span id="leftDistVal">2 ช่อง</span>
+            </label>
+            <div class="slider-row">
+              <input type="range" id="leftDistSlider" min="1" max="4" step="1" value="2" oninput="updateLab()">
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label>
+              <span>🔺 น้ำหนักวัตถุฝั่งขวา</span>
+              <span id="rightWeightVal">2 หน่วย</span>
+            </label>
+            <div class="slider-row">
+              <input type="range" id="rightWeightSlider" min="1" max="6" step="1" value="2" oninput="updateLab()">
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label>
+              <span>📏 ระยะห่างฝั่งขวาจากจุดหมุน</span>
+              <span id="rightDistVal">3 ช่อง</span>
+            </label>
+            <div class="slider-row">
+              <input type="range" id="rightDistSlider" min="1" max="4" step="1" value="3" oninput="updateLab()">
+            </div>
+          </div>
+
+          <div class="feedback-box" id="labExplainBox">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Questions matching the exact 5 exercises in the uploaded worksheet
+    const questions = [
+      {
+        id: 1,
+        title: "ข้อที่ 1",
+        ruleTag: "หลักการ: อยู่ใกล้จุดหมุนกว่า = หนักกว่า",
+        subtitle: "คานตั้งตรงสมดุล สังเกตว่ารูปทรงใดวางอยู่ใกล้จุดหมุน (ตรงกลาง) มากกว่ากัน",
+        choiceA: { type: "dark-triangle", label: "สามเหลี่ยมทึบ" },
+        choiceB: { type: "dark-square", label: "สี่เหลี่ยมทึบ" },
+        correct: "ข",
+        explanation: "เพราะคานอยู่ในแนวระดับสมดุลกัน <strong>สี่เหลี่ยมทึบ (ข.)</strong> วางอยู่ห่างจากจุดหมุนเพียง 2 ช่อง ส่วนสามเหลี่ยมทึบอยู่ห่างถึง 3 ช่อง <strong>สิ่งที่อยู่ใกล้จุดหมุนกว่าจึงหนักกว่า</strong>",
+        guideText: "สี่เหลี่ยมทึบห่างจุดหมุน 2 ช่อง (ใกล้กว่า = หนักกว่า) | สามเหลี่ยมทึบห่างจุดหมุน 3 ช่อง (ไกลกว่า = เบากว่า)"
+      },
+      {
+        id: 2,
+        title: "ข้อที่ 2",
+        ruleTag: "หลักการ: อยู่ใกล้จุดหมุนกว่า = หนักกว่า",
+        subtitle: "คานตั้งตรงสมดุล สังเกตระยะห่างของสามเหลี่ยมทึบและสามเหลี่ยมขาวจากจุดหมุน",
+        choiceA: { type: "white-triangle", label: "สามเหลี่ยมขาว" },
+        choiceB: { type: "dark-triangle", label: "สามเหลี่ยมทึบ" },
+        correct: "ข",
+        explanation: "เพราะคานสมดุลกัน <strong>สามเหลี่ยมทึบ (ข.)</strong> อยู่ชิดจุดหมุนในช่องที่ 1 ส่วนสามเหลี่ยมขาวอยู่ไกลออกไปถึงช่องที่ 3 ดังนั้น <strong>สามเหลี่ยมทึบจึงหนักกว่า</strong>",
+        guideText: "สามเหลี่ยมทึบห่างจุดหมุน 1 ช่อง (ใกล้กว่า = หนักกว่า) | สามเหลี่ยมขาวห่างจุดหมุน 3 ช่อง (ไกลกว่า = เบากว่า)"
+      },
+      {
+        id: 3,
+        title: "ข้อที่ 3",
+        ruleTag: "หลักการ: แขนคานสั้นกว่า (ใกล้จุดหมุน) = หนักกว่า",
+        subtitle: "จุดหมุนถูกเลื่อนไปทางขวาแต่คานยังสมดุลอยู่ สังเกตว่าลูกกลมใดอยู่ใกล้จุดหมุนมากกว่า",
+        choiceA: { type: "dark-circle", label: "วงกลมทึบ" },
+        choiceB: { type: "white-circle", label: "วงกลมขาว" },
+        correct: "ก",
+        explanation: "จุดหมุนอยู่ค่อนไปทางฝั่งขวา ทำให้ <strong>วงกลมทึบ (ก.)</strong> อยู่ใกล้จุดหมุนมากกว่าวงกลมขาว เมื่อคานสมดุล <strong>วัตถุที่อยู่ใกล้จุดหมุนกว่าจึงหนักกว่า</strong>",
+        guideText: "แขนคานฝั่งซ้ายยาวมาก (ไกลจุดหมุน) | แขนคานฝั่งขวาสั้น (ใกล้จุดหมุนกว่า = วงกลมทึบหนักกว่า)"
+      },
+      {
+        id: 4,
+        title: "ข้อที่ 4",
+        ruleTag: "หลักการ: ตัดสิ่งของที่เหมือนกันออกทั้ง 2 ฝั่ง",
+        subtitle: "จุดหมุนอยู่ตรงกลาง คานเอียงลงทางซ้าย ลองตัดวงกลมขาวที่ซ้ำกันออกฝั่งละ 1 ลูก",
+        choiceA: { type: "dark-circle", label: "วงกลมทึบ" },
+        choiceB: { type: "white-circle", label: "วงกลมขาว" },
+        correct: "ก",
+        explanation: "ทั้งสองฝั่งมีวงกลมขาวเหมือนกัน เมื่อเอาวงกลมขาวออกฝั่งละ 1 ลูก จะเหลือ <strong>วงกลมทึบฝั่งซ้าย</strong> กับ <strong>วงกลมขาวฝั่งขวา</strong> ซึ่งฝั่งซ้ายเอียงต่ำลง ดังนั้น <strong>วงกลมทึบ (ก.) จึงหนักกว่า</strong>",
+        guideText: "ตัดวงกลมขาวออกฝั่งละ 1 ลูก → เหลือ วงกลมทึบ (ซ้าย-ต่ำกว่า) เทียบกับ วงกลมขาว (ขวา-สูงกว่า)"
+      },
+      {
+        id: 5,
+        title: "ข้อที่ 5",
+        ruleTag: "หลักการ: จำนวนชิ้นน้อยกว่าแต่สมดุลกัน = หนักกว่า",
+        subtitle: "จุดหมุนอยู่ตรงกลางและคานสมดุล ฝั่งซ้ายใช้วงกลมขาว 2 ลูก เท่ากับวงกลมทึบฝั่งขวา 3 ลูก",
+        choiceA: { type: "dark-circle", label: "วงกลมทึบ" },
+        choiceB: { type: "white-circle", label: "วงกลมขาว" },
+        correct: "ข",
+        explanation: "วงกลมขาวเพียง <strong>2 ลูก</strong> มีน้ำหนักรวมเท่ากับวงกลมทึบถึง <strong>3 ลูก</strong> (เช่น ขาวลูกละ 3 กก. รวมเป็น 6 กก. = ทึบลูกละ 2 กก. 3 ลูก) ดังนั้น <strong>วงกลมขาว 1 ลูก (ข.) จึงหนักกว่าวงกลมทึบ 1 ลูก</strong>",
+        guideText: "ขาว 2 ลูก = ทึบ 3 ลูก (สมมติรวมหนัก 6 หน่วย → ขาวลูกละ 3 หน่วย, ทึบลูกละ 2 หน่วย)"
+      }
+    ];
+
+    let currentIndex = 0;
+    let showGuide = false;
+    let q4RemovedCommon = false;
+    const userAnswers = {}; // { 1: 'ข', ... }
+
+    function renderShapeThumb(type) {
+      if (type === "dark-triangle") {
+        return `<svg width="64" height="64" viewBox="0 0 64 64">
+          <polygon points="32,8 56,54 8,54" fill="#1e293b" stroke="#1e293b" stroke-width="3" stroke-linejoin="round"/>
+        </svg>`;
+      }
+      if (type === "white-triangle") {
+        return `<svg width="64" height="64" viewBox="0 0 64 64">
+          <polygon points="32,8 56,54 8,54" fill="#ffffff" stroke="#1e293b" stroke-width="3" stroke-linejoin="round"/>
+        </svg>`;
+      }
+      if (type === "dark-square") {
+        return `<svg width="64" height="64" viewBox="0 0 64 64">
+          <rect x="12" y="12" width="40" height="40" fill="#1e293b" stroke="#1e293b" stroke-width="3" rx="2"/>
+        </svg>`;
+      }
+      if (type === "dark-circle") {
+        return `<svg width="64" height="64" viewBox="0 0 64 64">
+          <circle cx="32" cy="32" r="22" fill="#1e293b" stroke="#1e293b" stroke-width="3"/>
+        </svg>`;
+      }
+      if (type === "white-circle") {
+        return `<svg width="64" height="64" viewBox="0 0 64 64">
+          <circle cx="32" cy="32" r="22" fill="#ffffff" stroke="#1e293b" stroke-width="3"/>
+        </svg>`;
+      }
+      return "";
+    }
+
+    function renderFulcrum(cx, cy) {
+      return `
+        <g transform="translate(${cx}, ${cy})">
+          <path d="M -18,44 L -10,4 Q 0,-4 10,4 L 18,44 Z" fill="#ffffff" stroke="#1e293b" stroke-width="2.5"/>
+          <rect x="-24" y="42" width="48" height="10" rx="5" fill="#ffffff" stroke="#1e293b" stroke-width="2.5"/>
+          <circle cx="0" cy="8" r="3.5" fill="#ffffff" stroke="#1e293b" stroke-width="2.2"/>
+        </g>
+      `;
+    }
+
+    function renderQuestionSVG(q) {
+      const guide = showGuide;
+
+      // QUESTION 1: Pegged beam, dark square at left slot 2, dark triangle at right slot 3
+      if (q.id === 1) {
+        return `
+          <svg viewBox="0 0 540 230" aria-label="ภาพโจทย์ข้อที่ 1">
+            <!-- Distance Guide Overlay -->
+            ${guide ? `
+              <g>
+                <line x1="270" y1="55" x2="175" y2="55" stroke="#16a34a" stroke-width="3"/>
+                <circle cx="175" cy="55" r="4" fill="#16a34a"/>
+                <text x="222" y="45" text-anchor="middle" font-size="13" font-weight="700" fill="#15803d">ใกล้กว่า (2 ช่อง) = หนักกว่า</text>
+
+                <line x1="270" y1="30" x2="435" y2="30" stroke="#dc2626" stroke-width="3" stroke-dasharray="5,4"/>
+                <circle cx="435" cy="30" r="4" fill="#dc2626"/>
+                <text x="352" y="20" text-anchor="middle" font-size="13" font-weight="700" fill="#b91c1c">ไกลกว่า (3 ช่อง) = เบากว่า</text>
+                <line x1="270" y1="22" x2="270" y2="128" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3,3"/>
+              </g>
+            ` : ""}
+
+            <!-- Horizontal Beam -->
+            <rect x="75" y="128" width="390" height="8" fill="#ffffff" stroke="#1e293b" stroke-width="2.5"/>
+
+            <!-- Left Pegs (4 pegs at 78, 138, 198, 258 -> 3 slots, plus center) -->
+            ${[78, 126, 174, 222, 318, 366, 414, 462].map(x => `
+              <rect x="${x - 2.5}" y="106" width="5" height="22" rx="2" fill="#ffffff" stroke="#1e293b" stroke-width="2"/>
+            `).join("")}
+
+            <!-- Dark Square on Left (centered around x=150, slot 2 from center) -->
+            <rect x="131" y="90" width="38" height="38" fill="#1e293b" stroke="#1e293b" stroke-width="2"/>
+
+            <!-- Dark Triangle on Right (outer slot between 414 and 462, centered at 438) -->
+            <polygon points="438,88 458,128 418,128" fill="#1e293b" stroke="#1e293b" stroke-width="2" stroke-linejoin="round"/>
+
+            <!-- Fulcrum at center (270, 128) -->
+            ${renderFulcrum(270, 128)}
+          </svg>
+        `;
+      }
+
+      // QUESTION 2: Pegged beam, dark triangle at left inner slot 1, white triangle at right outer slot 3
+      if (q.id === 2) {
+        return `
+          <svg viewBox="0 0 540 230" aria-label="ภาพโจทย์ข้อที่ 2">
+            ${guide ? `
+              <g>
+                <line x1="270" y1="58" x2="198" y2="58" stroke="#16a34a" stroke-width="3"/>
+                <circle cx="198" cy="58" r="4" fill="#16a34a"/>
+                <text x="210" y="46" text-anchor="middle" font-size="13" font-weight="700" fill="#15803d">ใกล้จุดหมุน (1 ช่อง) = หนักกว่า</text>
+
+                <line x1="270" y1="28" x2="438" y2="28" stroke="#dc2626" stroke-width="3" stroke-dasharray="5,4"/>
+                <circle cx="438" cy="28" r="4" fill="#dc2626"/>
+                <text x="360" y="18" text-anchor="middle" font-size="13" font-weight="700" fill="#b91c1c">ไกลจุดหมุน (3 ช่อง) = เบากว่า</text>
+                <line x1="270" y1="20" x2="270" y2="128" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3,3"/>
+              </g>
+            ` : ""}
+
+            <!-- Horizontal Beam -->
+            <rect x="75" y="128" width="390" height="8" fill="#ffffff" stroke="#1e293b" stroke-width="2.5"/>
+
+            <!-- Pegs -->
+            ${[78, 126, 174, 222, 318, 366, 414, 462].map(x => `
+              <rect x="${x - 2.5}" y="106" width="5" height="22" rx="2" fill="#ffffff" stroke="#1e293b" stroke-width="2"/>
+            `).join("")}
+
+            <!-- Dark Triangle on Left inner slot (between 174 and 222, centered at 198) -->
+            <polygon points="198,88 218,128 178,128" fill="#1e293b" stroke="#1e293b" stroke-width="2" stroke-linejoin="round"/>
+
+            <!-- White Triangle on Right outer slot (between 414 and 462, centered at 438) -->
+            <polygon points="438,88 458,128 418,128" fill="#ffffff" stroke="#1e293b" stroke-width="2.5" stroke-linejoin="round"/>
+
+            <!-- Fulcrum at center -->
+            ${renderFulcrum(270, 128)}
+          </svg>
+        `;
+      }
+
+      // QUESTION 3: Shifted fulcrum (right side shorter), white circle on left pan, dark circle on right pan
+      if (q.id === 3) {
+        return `
+          <svg viewBox="0 0 540 230" aria-label="ภาพโจทย์ข้อที่ 3">
+            ${guide ? `
+              <g>
+                <line x1="355" y1="42" x2="105" y2="42" stroke="#dc2626" stroke-width="3" stroke-dasharray="5,4"/>
+                <circle cx="105" cy="42" r="4" fill="#dc2626"/>
+                <text x="230" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#b91c1c">แขนคานยาว (ไกลจุดหมุน) = เบากว่า</text>
+
+                <line x1="355" y1="62" x2="435" y2="62" stroke="#16a34a" stroke-width="3"/>
+                <circle cx="435" cy="62" r="4" fill="#16a34a"/>
+                <text x="415" y="50" text-anchor="middle" font-size="13" font-weight="700" fill="#15803d">ใกล้จุดหมุน = หนักกว่า</text>
+                <line x1="355" y1="30" x2="355" y2="132" stroke="#64748b" stroke-width="1.5" stroke-dasharray="3,3"/>
+              </g>
+            ` : ""}
+
+            <!-- Horizontal Beam -->
+            <rect x="85" y="132" width="370" height="7" fill="#ffffff" stroke="#1e293b" stroke-width="2.5"/>
+
+            <!-- Left Pan at x=105 -->
+            <rect x="102" y="114" width="6" height="18" fill="#ffffff" stroke="#1e293b" stroke-width="2"/>
+            <path d="M 65,92 L 65,114 L 145,114 L 145,92 L 139,92 L 139,108 L 71,108 L 71,92 Z" fill="#ffffff" stroke="#1e293b" stroke-width="2.2" stroke-linejoin="round"/>
+            <circle cx="105" cy="90" r="17" fill="#ffffff" stroke="#1e293b" stroke-width="2.5"/>
+
+            <!-- Right Pan at x=435 -->
+            <rect x="432" y="114" width="6" height="18" fill="#ffffff" stroke="#1e293b" stroke-width="2"/>
+            <path d="M 395,92 L 395,114 L 475,114 L 475,92 L 469,92 L 469,108 L 401,108 L 401,92 Z" fill="#ffffff" stroke="#1e293b" stroke-width="2.2" stroke-linejoin="round"/>
+            <circle cx="435" cy="90" r="17" fill="#1e293b" stroke="#1e293b" stroke-width="2.5"/>
+
+            <!-- Shifted Fulcrum at x=355 -->
+            ${renderFulcrum(355, 132)}
+          </svg>
+        `;
+      }
+
+      // QUESTION 4: Tilted beam (left down, right up). Left pan: 1 white + 1 dark circle. Right pan: 2 white circles.
+      if (q.id === 4) {
+        const fadeCommon = q4RemovedCommon || guide;
+        return `
+          <svg viewBox="0 0 540 245" aria-label="ภาพโจทย์ข้อที่ 4">
+            ${fadeCommon ? `
+              <text x="270" y="26" text-anchor="middle" font-size="14" font-weight="700" fill="#15803d">
+                ✂️ ตัดวงกลมขาวออกฝั่งละ 1 ลูก → เหลือ วงกลมทึบ (ซ้ายต่ำกว่า = หนักกว่า)
+              </text>
+            ` : ""}
+
+            <!-- Tilted Beam around pivot (270, 140), tilted -10 deg (left is lower, right is higher) -->
+            <g transform="translate(270, 140) rotate(-11)">
+              <rect x="-185" y="-4" width="370" height="7" fill="#ffffff" stroke="#1e293b" stroke-width="2.5"/>
+            </g>
+
+            <!-- Left Pan (at x=105, y=172) kept upright -->
+            <g transform="translate(105, 172)">
+              <rect x="-3" y="-18" width="6" height="18" fill="#ffffff" stroke="#1e293b" stroke-width="2"/>
+              <path d="M -42,-40 L -42,-18 L 42,-18 L 42,-40 L 36,-40 L 36,-24 L -36,-24 L -36,-40 Z" fill="#ffffff" stroke="#1e293b" stroke-width="2.2"/>
+              <!-- White circle on left pan -->
+              <g opacity="${fadeCommon ? '0.22' : '1'}">
+                <circle cx="-17" cy="-41" r="16" fill="#ffffff" stroke="#1e293b" stroke-width="2.5"/>
+                ${fadeCommon ? `<line x1="-30" y1="-54" x2="-4" y2="-28" stroke="#dc2626" stroke-width="3"/>` : ""}
+              </g>
+              <!-- Dark circle on left pan -->
+              <circle cx="17" cy="-41" r="16" fill="#1e293b" stroke="#1e293b" stroke-width="2.5"/>
+            </g>
+
+            <!-- Right Pan (at x=435, y=108) kept upright -->
+            <g transform="translate(435, 108)">
+              <rect x="-3" y="-18" width="6" height="18" fill="#ffffff" stroke="#1e293b" stroke-width="2"/>
+              <path d="M -42,-40 L -42,-18 L 42,-18 L 42,-40 L 36,-40 L 36,-24 L -36,-24 L -36,-40 Z" fill="#ffffff" stroke="#1e293b" stroke-width="2.2"/>
+              <!-- First White circle on right pan (faded if removed) -->
+              <g opacity="${fadeCommon ? '0.22' : '1'}">
+                <circle cx="-17" cy="-41" r="16" fill="#ffffff" stroke="#1e293b" stroke-width="2.5"/>
+                ${fadeCommon ? `<line x1="-30" y1="-54" x2="-4" y2="-28" stroke="#dc2626" stroke-width="3"/>` : ""}
+              </g>
+              <!-- Second White circle on right pan -->
+              <circle cx="17" cy="-41" r="16" fill="#ffffff" stroke="#1e293b" stroke-width="2.5"/>
+            </g>
+
+            <!-- Fulcrum at center (270, 140) -->
+            ${renderFulcrum(270, 140)}
+          </svg>
+        `;
+      }
+
+      // QUESTION 5: Balanced beam, center fulcrum. Left pan: 2 white circles. Right pan: 3 dark circles (2 bottom, 1 top).
+      if (q.id === 5) {
+        return `
+          <svg viewBox="0 0 540 235" aria-label="ภาพโจทย์ข้อที่ 5">
+            ${guide ? `
+              <g>
+                <rect x="35" y="14" width="160" height="32" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+                <text x="115" y="35" text-anchor="middle" font-size="13" font-weight="700" fill="#15803d">ขาว 2 ลูก (ลูกละ 3 หน่วย = 6)</text>
+
+                <rect x="345" y="14" width="165" height="32" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="1.5"/>
+                <text x="427" y="35" text-anchor="middle" font-size="13" font-weight="700" fill="#b91c1c">ทึบ 3 ลูก (ลูกละ 2 หน่วย = 6)</text>
+              </g>
+            ` : ""}
+
+            <!-- Horizontal Beam -->
+            <rect x="85" y="140" width="370" height="7" fill="#ffffff" stroke="#1e293b" stroke-width="2.5"/>
+
+            <!-- Left Pan (2 white circles) -->
+            <g transform="translate(110, 140)">
+              <rect x="-3" y="-18" width="6" height="18" fill="#ffffff" stroke="#1e293b" stroke-width="2"/>
+              <path d="M -42,-40 L -42,-18 L 42,-18 L 42,-40 L 36,-40 L 36,-24 L -36,-24 L -36,-40 Z" fill="#ffffff" stroke="#1e293b" stroke-width="2.2"/>
+              <circle cx="-17" cy="-41" r="16" fill="#ffffff" stroke="#1e293b" stroke-width="2.5"/>
+              <circle cx="17" cy="-41" r="16" fill="#ffffff" stroke="#1e293b" stroke-width="2.5"/>
+              ${guide ? `
+                <text x="-17" y="-36" text-anchor="middle" font-size="13" font-weight="700" fill="#15803d">3</text>
+                <text x="17" y="-36" text-anchor="middle" font-size="13" font-weight="700" fill="#15803d">3</text>
+              ` : ""}
+            </g>
+
+            <!-- Right Pan (3 dark circles stacked pyramid) -->
+            <g transform="translate(430, 140)">
+              <rect x="-3" y="-18" width="6" height="18" fill="#ffffff" stroke="#1e293b" stroke-width="2"/>
+              <path d="M -42,-40 L -42,-18 L 42,-18 L 42,-40 L 36,-40 L 36,-24 L -36,-24 L -36,-40 Z" fill="#ffffff" stroke="#1e293b" stroke-width="2.2"/>
+              <circle cx="-17" cy="-41" r="16" fill="#1e293b" stroke="#1e293b" stroke-width="2.5"/>
+              <circle cx="17" cy="-41" r="16" fill="#1e293b" stroke="#1e293b" stroke-width="2.5"/>
+              <circle cx="0" cy="-69" r="16" fill="#1e293b" stroke="#1e293b" stroke-width="2.5"/>
+              ${guide ? `
+                <text x="-17" y="-36" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">2</text>
+                <text x="17" y="-36" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">2</text>
+                <text x="0" y="-64" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">2</text>
+              ` : ""}
+            </g>
+
+            <!-- Fulcrum at center -->
+            ${renderFulcrum(270, 140)}
+          </svg>
+        `;
+      }
+      return "";
+    }
+
+    function renderQuestionPills() {
+      const container = document.getElementById("questionPills");
+      container.innerHTML = questions.map((q, idx) => {
+        const ans = userAnswers[q.id];
+        const isCorrect = ans === q.correct;
+        const activeClass = idx === currentIndex ? "active" : "";
+        const solvedClass = isCorrect ? "solved-correct" : "";
+        const statusMark = isCorrect ? "✓" : (ans ? "✗" : "");
+        return `
+          <button class="q-pill ${activeClass} ${solvedClass}" onclick="goToQuestion(${idx})">
+            <span>ข้อ ${q.id}</span>
+            ${statusMark ? `<span>${statusMark}</span>` : ""}
+          </button>
+        `;
+      }).join("");
+
+      const correctCount = questions.filter(q => userAnswers[q.id] === q.correct).length;
+      document.getElementById("scoreBadge").textContent = `ตอบถูก ${correctCount} / ${questions.length} ข้อ`;
+    }
+
+    function renderCurrentQuestion() {
+      const q = questions[currentIndex];
+      document.getElementById("qHeaderTitle").textContent = q.title;
+      document.getElementById("qRuleTag").textContent = q.ruleTag;
+      document.getElementById("qPromptSubtitle").textContent = q.subtitle;
+
+      // Render SVG stage
+      document.getElementById("svgStage").innerHTML = renderQuestionSVG(q);
+
+      // Update Guide Button text
+      const guideBtn = document.getElementById("toggleGuideBtn");
+      guideBtn.textContent = showGuide
+        ? "🙈 ซ่อนเส้นช่วยสังเกต"
+        : "🔍 แสดงเส้นช่วยสังเกต / คำอธิบายภาพ";
+
+      // Show special button for Question 4
+      const stepBtn = document.getElementById("stepActionBtn");
+      if (q.id === 4) {
+        stepBtn.style.display = "inline-flex";
+        stepBtn.textContent = q4RemovedCommon
+          ? "↩️ วางวงกลมสีขาวกลับคืน"
+          : "✨ ทดลองตัดวงกลมสีขาวที่เหมือนกันออก";
+      } else {
+        stepBtn.style.display = "none";
+      }
+
+      // Render Choices A and B
+      document.getElementById("choiceSvgA").innerHTML = renderShapeThumb(q.choiceA.type);
+      document.getElementById("choiceDescA").textContent = q.choiceA.label;
+      document.getElementById("choiceSvgB").innerHTML = renderShapeThumb(q.choiceB.type);
+      document.getElementById("choiceDescB").textContent = q.choiceB.label;
+
+      const btnA = document.getElementById("choiceBtnA");
+      const btnB = document.getElementById("choiceBtnB");
+      btnA.className = "choice-card";
+      btnB.className = "choice-card";
+
+      const selected = userAnswers[q.id];
+      const feedbackBox = document.getElementById("feedbackBox");
+
+      if (!selected) {
+        feedbackBox.className = "feedback-box";
+        feedbackBox.innerHTML = `
+          <h4>💡 คำแนะนำ</h4>
+          <p>${showGuide ? q.guideText : 'เลือกคำตอบ <strong>ก.</strong> หรือ <strong>ข.</strong> ด้านบน หรือกดปุ่ม <em>"แสดงเส้นช่วยสังเกต"</em> เพื่อดูวิธีคิด'}</p>
+        `;
+      } else {
+        const isCorrect = selected === q.correct;
+        if (selected === "ก") {
+          btnA.classList.add(isCorrect ? "correct" : "wrong");
+        } else {
+          btnB.classList.add(isCorrect ? "correct" : "wrong");
+        }
+
+        if (isCorrect) {
+          feedbackBox.className = "feedback-box correct";
+          feedbackBox.innerHTML = `
+            <h4>✅ ถูกต้อง! คำตอบคือ ข้อ ${q.correct}. (${selected === "ก" ? q.choiceA.label : q.choiceB.label})</h4>
+            <p>${q.explanation}</p>
+          `;
+        } else {
+          feedbackBox.className = "feedback-box wrong";
+          feedbackBox.innerHTML = `
+            <h4>❌ ยังไม่ถูกต้อง ลองสังเกตอีกครั้งนะ!</h4>
+            <p>${q.guideText}</p>
+          `;
+        }
+      }
+
+      document.getElementById("prevQBtn").disabled = currentIndex === 0;
+      document.getElementById("nextQBtn").disabled = currentIndex === questions.length - 1;
+
+      renderQuestionPills();
+    }
+
+    function selectAnswer(choice) {
+      const q = questions[currentIndex];
+      userAnswers[q.id] = choice;
+      if (choice === q.correct) {
+        showGuide = true;
+      }
+      renderCurrentQuestion();
+    }
+
+    function toggleVisualGuide() {
+      showGuide = !showGuide;
+      renderCurrentQuestion();
+    }
+
+    function triggerSpecialStep() {
+      q4RemovedCommon = !q4RemovedCommon;
+      renderCurrentQuestion();
+    }
+
+    function goToQuestion(idx) {
+      currentIndex = idx;
+      showGuide = false;
+      q4RemovedCommon = false;
+      renderCurrentQuestion();
+    }
+
+    function changeQuestion(delta) {
+      const next = currentIndex + delta;
+      if (next >= 0 && next < questions.length) {
+        goToQuestion(next);
+      }
+    }
+
+    function resetAllQuiz() {
+      for (const key in userAnswers) {
+        delete userAnswers[key];
+      }
+      currentIndex = 0;
+      showGuide = false;
+      q4RemovedCommon = false;
+      renderCurrentQuestion();
+    }
+
+    // MODE SWITCHING
+    function switchMode(mode) {
+      const quizSec = document.getElementById("quizSection");
+      const labSec = document.getElementById("labSection");
+      const tabQuiz = document.getElementById("tabQuizBtn");
+      const tabLab = document.getElementById("tabLabBtn");
+
+      if (mode === "quiz") {
+        quizSec.classList.remove("hidden");
+        labSec.classList.add("hidden");
+        tabQuiz.classList.add("active");
+        tabLab.classList.remove("active");
+      } else {
+        quizSec.classList.add("hidden");
+        labSec.classList.remove("hidden");
+        tabQuiz.classList.remove("active");
+        tabLab.classList.add("active");
+        updateLab();
+      }
+    }
+
+    // SANDBOX LAB LOGIC
+    function updateLab() {
+      const wL = parseInt(document.getElementById("leftWeightSlider").value, 10);
+      const dL = parseInt(document.getElementById("leftDistSlider").value, 10);
+      const wR = parseInt(document.getElementById("rightWeightSlider").value, 10);
+      const dR = parseInt(document.getElementById("rightDistSlider").value, 10);
+
+      document.getElementById("leftWeightVal").textContent = `${wL} หน่วย`;
+      document.getElementById("leftDistVal").textContent = `${dL} ช่อง (ใกล้-ไกล)`;
+      document.getElementById("rightWeightVal").textContent = `${wR} หน่วย`;
+      document.getElementById("rightDistVal").textContent = `${dR} ช่อง (ใกล้-ไกล)`;
+
+      const torqueLeft = wL * dL;
+      const torqueRight = wR * dR;
+      const diff = torqueRight - torqueLeft; // positive = tilts right down, negative = tilts left down
+      const angle = Math.max(-14, Math.min(14, diff * 2.2));
+
+      const statusBadge = document.getElementById("labStatusBadge");
+      const explainBox = document.getElementById("labExplainBox");
+
+      if (torqueLeft === torqueRight) {
+        statusBadge.className = "status-pill status-balanced";
+        statusBadge.textContent = "⚖️ คานสมดุลพอดี!";
+
+        let compText = "วัตถุทั้งสองฝั่งมีน้ำหนักเท่ากัน และอยู่ห่างจากจุดหมุนเท่ากัน";
+        if (wL > wR) {
+          compText = `<strong>สี่เหลี่ยมฝั่งซ้ายหนักกว่า (${wL} > ${wR})</strong> จึงวางอยู่ <strong>ใกล้จุดหมุนมากกว่า (${dL} ช่อง < ${dR} ช่อง)</strong> แล้วคานสมดุลพอดี!`;
+        } else if (wR > wL) {
+          compText = `<strong>สามเหลี่ยมฝั่งขวาหนักกว่า (${wR} > ${wL})</strong> จึงวางอยู่ <strong>ใกล้จุดหมุนมากกว่า (${dR} ช่อง < ${dL} ช่อง)</strong> แล้วคานสมดุลพอดี!`;
+        }
+
+        explainBox.className = "feedback-box correct";
+        explainBox.innerHTML = `
+          <h4>✅ สมดุลคาน: (น้ำหนักซ้าย ${wL} × ระยะ ${dL}) = (น้ำหนักขวา ${wR} × ระยะ ${dR}) = ${torqueLeft}</h4>
+          <p>${compText}</p>
+        `;
+      } else {
+        statusBadge.className = "status-pill status-tilted";
+        statusBadge.textContent = torqueLeft > torqueRight ? "↙️ คานเอียงลงฝั่งซ้าย" : "↘️ คานเอียงลงฝั่งขวา";
+
+        explainBox.className = "feedback-box";
+        explainBox.innerHTML = `
+          <h4>🔍 แรงหมุนฝั่งซ้าย (${wL} × ${dL} = ${torqueLeft}) ${torqueLeft > torqueRight ? ">" : "<"} แรงหมุนฝั่งขวา (${wR} × ${dR} = ${torqueRight})</h4>
+          <p>ลองเลื่อนระยะห่างให้ฝั่งที่ <strong>หนักกว่าอยู่ใกล้จุดหมุน</strong> และฝั่งที่ <strong>เบากว่าอยู่ไกลจุดหมุน</strong> เพื่อให้คานกลับมาสมดุล!</p>
+        `;
+      }
+
+      const slotStep = 44;
+      const leftX = -dL * slotStep;
+      const rightX = dR * slotStep;
+      const leftSize = 26 + wL * 4;
+      const rightSize = 28 + wR * 4;
+
+      document.getElementById("labSvgStage").innerHTML = `
+        <svg viewBox="0 0 540 240" aria-label="ภาพจำลองคานสมดุล">
+          <g transform="translate(270, 140) rotate(${angle})">
+            <!-- Beam -->
+            <rect x="-200" y="-4" width="400" height="8" fill="#ffffff" stroke="#1e293b" stroke-width="2.5"/>
+
+            <!-- Slot Ticks -->
+            ${[-4, -3, -2, -1, 1, 2, 3, 4].map(slot => `
+              <rect x="${slot * slotStep - 2}" y="-20" width="4" height="16" fill="#cbd5e1" stroke="#475569" stroke-width="1.5"/>
+              <text x="${slot * slotStep}" y="20" text-anchor="middle" font-size="11" font-weight="700" fill="#64748b">${Math.abs(slot)}</text>
+            `).join("")}
+
+            <!-- Left Object (Square) -->
+            <rect x="${leftX - leftSize / 2}" y="${-4 - leftSize}" width="${leftSize}" height="${leftSize}" rx="4" fill="#2563eb" stroke="#1e293b" stroke-width="2.2"/>
+            <text x="${leftX}" y="${-4 - leftSize / 2 + 5}" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">${wL}</text>
+
+            <!-- Right Object (Triangle) -->
+            <polygon points="${rightX},${-4 - rightSize} ${rightX + rightSize / 1.8},-4 ${rightX - rightSize / 1.8},-4" fill="#d97706" stroke="#1e293b" stroke-width="2.2" stroke-linejoin="round"/>
+            <text x="${rightX}" y="${-4 - rightSize / 3}" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">${wR}</text>
+          </g>
+
+          <!-- Fulcrum -->
+          ${renderFulcrum(270, 140)}
+        </svg>
+      `;
+    }
+
+    function loadLabPreset(presetNum) {
+      const wL = document.getElementById("leftWeightSlider");
+      const dL = document.getElementById("leftDistSlider");
+      const wR = document.getElementById("rightWeightSlider");
+      const dR = document.getElementById("rightDistSlider");
+
+      if (presetNum === 1) {
+        // Square at slot 2, Triangle at slot 3 -> weights 3 and 2
+        wL.value = 3; dL.value = 2;
+        wR.value = 2; dR.value = 3;
+      } else if (presetNum === 2) {
+        // Dark triangle at slot 1, White triangle at slot 3 -> weights 3 and 1
+        wL.value = 3; dL.value = 1;
+        wR.value = 1; dR.value = 3;
+      } else if (presetNum === 3) {
+        // Left arm long (slot 4), Right arm short (slot 1) -> weights 1 and 4
+        wL.value = 1; dL.value = 4;
+        wR.value = 4; dR.value = 1;
+      } else if (presetNum === 5) {
+        // Equal distance, show weight balance
+        wL.value = 6; dL.value = 2;
+        wR.value = 6; dR.value = 2;
+      }
+      updateLab();
+    }
+
+    // Initialize on load
+    renderCurrentQuestion();
+  </script>
+</body>
+</html>
